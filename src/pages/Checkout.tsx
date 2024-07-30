@@ -1,4 +1,5 @@
-import CssBaseline from '@mui/material/CssBaseline';
+import {Fragment, useState} from "react";
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -8,72 +9,22 @@ import Stack from '@mui/material/Stack';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 import Typography from '@mui/material/Typography';
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { PaletteMode } from '@mui/material';
-
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import AddressForm from '../components/AddressForm.tsx';
+import Info from '../components/Info.tsx';
+import InfoMobile from '../components/InfoMobile.tsx';
+import PaymentForm from '../components/PaymentForm.tsx';
+import Review from '../components/Review.tsx';
+import ToggleColorMode from '../components/ToggleColorMode.tsx';
+import SitemarkIcon from '../components/SitemarkIcon.tsx';
+import {useGlobalTheme} from "../shared/hooks/useGlobalTheme.tsx";
 
-import AddressForm from './AddressForm.tsx';
-import getCheckoutTheme from './getCheckoutTheme.tsx';
-import Info from './Info.tsx';
-import InfoMobile from './InfoMobile.tsx';
-import PaymentForm from './PaymentForm.tsx';
-import Review from './Review.tsx';
-import ToggleColorMode from './ToggleColorMode.tsx';
-import SitemarkIcon from './SitemarkIcon.tsx';
-import {Fragment, useState} from "react";
-
-interface ToggleCustomThemeProps {
-  showCustomTheme: boolean;
-  toggleCustomTheme: () => void;
-}
-
-function ToggleCustomTheme({
-  showCustomTheme,
-  toggleCustomTheme,
-}: ToggleCustomThemeProps) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100dvw',
-        position: 'fixed',
-        bottom: 24,
-      }}
-    >
-      <ToggleButtonGroup
-        color="primary"
-        exclusive
-        value={showCustomTheme}
-        onChange={toggleCustomTheme}
-        aria-label="Toggle design language"
-        sx={{
-          backgroundColor: 'background.default',
-          '& .Mui-selected': {
-            pointerEvents: 'none',
-          },
-        }}
-      >
-        <ToggleButton value={true}>
-          <AutoAwesomeRoundedIcon sx={{ fontSize: '20px', mr: 1 }} />
-          Custom theme
-        </ToggleButton>
-        <ToggleButton data-screenshot="toggle-default-theme" value={false}>
-          Material Design 2
-        </ToggleButton>
-      </ToggleButtonGroup>
-    </Box>
-  );
-}
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 function getStepContent(step: number) {
   switch (step) {
@@ -88,26 +39,20 @@ function getStepContent(step: number) {
   }
 }
 export default function Checkout() {
-  const [mode, setMode] = useState<PaletteMode>('light');
-  const [showCustomTheme, setShowCustomTheme] = useState(true);
-  const checkoutTheme = createTheme(getCheckoutTheme(mode));
-  const defaultTheme = createTheme({ palette: { mode } });
-  const [activeStep, setActiveStep] = useState(0);
-  const toggleColorMode = () => {
-    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
-  const toggleCustomTheme = () => {
-    setShowCustomTheme((prev) => !prev);
-  };
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
-  };
-  const handleBack = () => {
-    setActiveStep(activeStep - 1);
-  };
+
+    const { mode, toggleColorMode } = useGlobalTheme();
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    const handleNext = () => {
+        setActiveStep(activeStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep(activeStep - 1);
+    };
+
   return (
-    <ThemeProvider theme={showCustomTheme ? checkoutTheme : defaultTheme}>
-      <CssBaseline />
       <Grid container sx={{ height: { xs: '100%', sm: '100dvh' } }}>
         <Grid
           item
@@ -216,7 +161,7 @@ export default function Checkout() {
               >
                 {steps.map((label) => (
                   <Step
-                    sx={{ ':first-child': { pl: 0 }, ':last-child': { pr: 0 } }}
+                    sx={{ ':first-of-child': { pl: 0 }, ':last-child': { pr: 0 } }}
                     key={label}
                   >
                     <StepLabel>{label}</StepLabel>
@@ -266,7 +211,7 @@ export default function Checkout() {
               {steps.map((label) => (
                 <Step
                   sx={{
-                    ':first-child': { pl: 0 },
+                    ':first-of-child': { pl: 0 },
                     ':last-child': { pr: 0 },
                     '& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
                   }}
@@ -351,10 +296,5 @@ export default function Checkout() {
           </Box>
         </Grid>
       </Grid>
-      <ToggleCustomTheme
-        toggleCustomTheme={toggleCustomTheme}
-        showCustomTheme={showCustomTheme}
-      />
-    </ThemeProvider>
   );
 }

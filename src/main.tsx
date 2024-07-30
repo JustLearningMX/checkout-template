@@ -1,9 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Checkout from "./components/Checkout.tsx";
+
+import { GlobalThemeContextProvider } from "./shared/theme/GlobalThemeContext.tsx";
+
+import App from "./App.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Checkout />
+      <GlobalThemeContextProvider>
+          <App />
+      </GlobalThemeContextProvider>
   </React.StrictMode>,
 )
